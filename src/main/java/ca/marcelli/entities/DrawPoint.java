@@ -8,10 +8,19 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class DrawPoint extends Drawable {
+
+  /**
+   * The point will be offset by 2 so it centres when it draws
+   * @param p Point to draw
+   */
   public DrawPoint(Point p) {
     super(p.x - 2, p.y - 2, 5, 5, Color.CYAN);
   }
 
+  /**
+   * Get the points true place
+   * @return point, with offset removed
+   */
   public Point getPoint() {
     return new Point(getX() + 2, getY() + 2);
   }

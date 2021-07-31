@@ -130,10 +130,10 @@ public class RectangleFrame extends JFrame {
             // i only need to check rectangles that actually had an intersection
             intersection.setColor(Color.BLUE);
             // You really need to use HTML for multiline jlabels yeesh...
-            if (rectangle.contains(r, intersection)) {
+            if (rectangle.hasContainmentWith(r, intersection)) {
               intersection.setMessage(String.format("<html>%s contains %s<br/></html>",
                   rectangle.getName(), r.getName()));
-            } else if (r.contains(rectangle, intersection)) {
+            } else if (r.hasContainmentWith(rectangle, intersection)) {
               intersection.setMessage(String.format("<html> %s is contained within %s <br/><html>",
                   rectangle.getName(), r.getName()));
             } else {

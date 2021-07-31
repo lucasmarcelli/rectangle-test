@@ -11,6 +11,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+/**
+ * Parent class to provide an interface so I can easily draw stuff
+ */
 public class Drawable {
   private int x;
   private int y;
