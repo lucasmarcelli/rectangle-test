@@ -11,6 +11,7 @@ import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,16 +25,16 @@ import javax.swing.JPanel;
 public class RectangleFrame extends JFrame {
 
   // Simple panel for rendering buttons for interaction
-  private JPanel infoPanel = new JPanel();
+  private final JPanel infoPanel = new JPanel();
 
   // Hashmap tracking sub-panels for interaction
-  private HashMap<String, JPanel> interactiveComponents = new HashMap<>();
+  private final HashMap<String, JPanel> interactiveComponents = new HashMap<>();
 
   // Panel for drawing rectangles on
-  private RectanglePanel rectanglePanel;
+  private final RectanglePanel rectanglePanel;
 
   // Panel for listing intersections
-  private JPanel intersectPanel = new JPanel();
+  private final JPanel intersectPanel = new JPanel();
 
   public RectangleFrame(HashMap<String, DrawRectangle> rectangles) {
     // Set basic layouts and properties for the main panels
@@ -41,9 +42,10 @@ public class RectangleFrame extends JFrame {
     rectanglePanel = new RectanglePanel(rectangles);
     rectanglePanel.setBackground(Color.WHITE);
     infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.PAGE_AXIS));
-    infoPanel.setPreferredSize(new Dimension(400, 700));
+    infoPanel.setPreferredSize(new Dimension(300, 1200));
     rectanglePanel.setPreferredSize(new Dimension(800, 1200));
-    intersectPanel.setMaximumSize(new Dimension(350, 1200));
+    intersectPanel.setPreferredSize(new Dimension(300, 1200));
+    intersectPanel.setMinimumSize(new Dimension(250, 1200));
 
     // Add listeners for mouse click and motion to generate new rectangles
     rectanglePanel.addMouseListener(indicatorRectangleAdapter());
@@ -53,6 +55,7 @@ public class RectangleFrame extends JFrame {
     generateInteractiveComponents();
     add(rectanglePanel, BorderLayout.CENTER);
     add(infoPanel, BorderLayout.LINE_START);
+    add(intersectPanel, BorderLayout.LINE_END);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setSize(1400, 1200);
     setVisible(true);
@@ -87,11 +90,12 @@ public class RectangleFrame extends JFrame {
   // Generate the labels and buttons for each rectangle
   private void generateInteractiveComponents() {
     // Clear the current list of components, easy way to ensure no duplicates
-    interactiveComponents.values().forEach(i -> infoPanel.remove(i));
+    interactiveComponents.values().forEach(infoPanel::remove);
     interactiveComponents.clear();
 
     // Build new ones based on the rectangles currently part of the panel
-    rectanglePanel.getRectangles().values().forEach(rectangle -> {
+    rectanglePanel.getRectangles().values().stream()
+        .sorted(Comparator.comparing(DrawRectangle::getName)).forEach(rectangle -> {
       JButton deleteButton = new JButton("Delete");
       JButton evaluateButton = new JButton("Evaluate");
       JLabel rectLabel = new JLabel(rectangle.getName());
@@ -127,7 +131,7 @@ public class RectangleFrame extends JFrame {
               intersection.setMessage(String.format("<html>%s contains %s<br/></html>",
                   rectangle.getName(), r.getName()));
             } else if (r.hasContainmentWith(rectangle, intersection)) {
-              intersection.setMessage(String.format("<html> %s is contained within %s <br/><html>",
+              intersection.setMessage(String.format("<html>%s is contained within %s<br/><html>",
                   rectangle.getName(), r.getName()));
             } else {
               String message = "<html>";
@@ -139,9 +143,9 @@ public class RectangleFrame extends JFrame {
                 rectanglePanel.addIntersectPointsAndSegments(drawable);
                 if (drawable instanceof DrawSegment) {
                   DrawSegment segment = (DrawSegment) drawable;
-                  return String.format("<br/> along all points from %s", segment);
+                  return String.format("along all points from %s<br/>", segment);
                 }
-                return String.format("<br/>%s ", drawable.toString());
+                return String.format("at point %s<br/>", drawable.toString());
               }).collect(Collectors.joining());
               message += "</html>";
               intersection.setMessage(message);
@@ -155,7 +159,8 @@ public class RectangleFrame extends JFrame {
             // Check adjacent
             List<DrawSegment> adjacentSegments = r.isAdjacentTo(rectangle);
             rectanglePanel.addIntersectPointsAndSegments(adjacentSegments);
-            adjacentSegments.forEach(segment -> intersectPanel.add(new JLabel(segment.getMessage())));
+            adjacentSegments
+                .forEach(segment -> intersectPanel.add(new JLabel(segment.getMessage())));
           }
         });
         revalidate();
@@ -165,7 +170,6 @@ public class RectangleFrame extends JFrame {
       // Add the generated sub panels to the main info panel
       interactiveComponents.put(rectangle.getName(), componentPanel);
       infoPanel.add(componentPanel);
-      infoPanel.add(intersectPanel);
     });
     revalidate();
     repaint();

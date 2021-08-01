@@ -49,12 +49,12 @@ public class Drawable {
 
   @Override
   public boolean equals(Object o) {
-	  if (this == o) {
-		  return true;
-	  }
-	  if (!(o instanceof Drawable)) {
-		  return false;
-	  }
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Drawable)) {
+      return false;
+    }
     Drawable drawable = (Drawable) o;
     return (drawable.getX() == this.getX() && drawable.getY() == this.getY()
         && drawable.getLength() == this.getLength() && drawable.getWidth() == this.getWidth());

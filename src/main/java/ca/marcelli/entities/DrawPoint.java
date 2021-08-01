@@ -11,6 +11,7 @@ public class DrawPoint extends Drawable {
 
   /**
    * The point will be offset by 2 so it centres when it draws
+   *
    * @param p Point to draw
    */
   public DrawPoint(Point p) {
@@ -23,6 +24,7 @@ public class DrawPoint extends Drawable {
 
   /**
    * Get the points true place
+   *
    * @return point, with offset removed
    */
   public Point getPoint() {
@@ -31,12 +33,12 @@ public class DrawPoint extends Drawable {
 
   @Override
   public boolean equals(Object o) {
-	  if (this == o) {
-		  return true;
-	  }
-	  if (!(o instanceof DrawPoint)) {
-		  return false;
-	  }
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof DrawPoint)) {
+      return false;
+    }
     DrawPoint drawPoint = (DrawPoint) o;
     return drawPoint.getPoint().equals(getPoint());
   }

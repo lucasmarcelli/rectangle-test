@@ -26,9 +26,9 @@ public class Main {
     rectangles.put(r.getName(), r);
 
     // Contained
-    r = new DrawRectangle(400, 25, 300, 300);
+    r = new DrawRectangle(400, 25, 200, 200);
     rectangles.put(r.getName(), r);
-    r = new DrawRectangle(400, 25, 100, 100);
+    r = new DrawRectangle(500, 50, 50, 50);
     rectangles.put(r.getName(), r);
 
     // Adjacent
@@ -44,10 +44,10 @@ public class Main {
     r = new DrawRectangle(200, 400, 50, 50);
     rectangles.put(r.getName(), r);
 
-    r = new DrawRectangle(700, 400, 100, 100);
+    r = new DrawRectangle(500, 400, 100, 100);
     rectangles.put(r.getName(), r);
 
-    r = new DrawRectangle(800, 425, 50, 50);
+    r = new DrawRectangle(600, 425, 50, 50);
     rectangles.put(r.getName(), r);
     return rectangles;
   }

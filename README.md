@@ -20,7 +20,7 @@ You can press the "Evaluate" button to see what rectangles have intersections, c
 The results will appear as labels on the GUI. Intersections will highlight in pink, containment will highlight in blue.
 Line intersection points are highlighted. Adjacent lines will be highlighted as well. 
 
-You can draw new rectangles and evaluate against those, simply click and drag in the right panel. Rectangles can be removed by pressing `delete`.s
+You can draw new rectangles and evaluate against those, simply click and drag in the right panel. Rectangles can be removed by pressing `delete`.
 
 ### Tests
 

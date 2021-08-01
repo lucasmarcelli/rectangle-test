@@ -61,7 +61,7 @@ class DrawRectangleTest {
   void testGetVertices() {
     // Just make sure that the right points are returned for a rectangle
     DrawRectangle r = new DrawRectangle(0, 0, 20, 30);
-    var expected = Set.of(
+    Set<Point> expected = Set.of(
         new Point(0, 0),
         new Point(0, 30),
         new Point(20, 0),

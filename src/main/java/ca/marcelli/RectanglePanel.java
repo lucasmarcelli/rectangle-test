@@ -56,16 +56,15 @@ public class RectanglePanel extends JPanel {
    * Creates the drawables that will show the intersection points and segments. A point intersection
    * occurs when two orthogonal sides cross. An "infinite" intersection segment occurs when the
    * rectangles share one or more sides with each other, but still intersect.
-   *
+   * <p>
    * The extraction works conceptually by taking a vertical line, moving it over each possible x value,
    * and counting the points. If the number of points is at least 3, there must be an intersection there,
    * and it will correspond to the "middle" of the values.
    * Repeat with a horizontal line for y values.
    *
-   *
    * @param intersectionRectangle DrawRectangle representing the intersection
-   * @param a DrawRectangle for intersection
-   * @param b Second DrawRectangle for intersection
+   * @param a                     DrawRectangle for intersection
+   * @param b                     Second DrawRectangle for intersection
    * @return a list of drawables to render
    */
   public List<Drawable> getAllIntersectionsFor(DrawRectangle intersectionRectangle,
@@ -73,7 +72,9 @@ public class RectanglePanel extends JPanel {
                                                DrawRectangle b) {
 
     // Fast fail in case intersection is null.
-    if(null == intersectionRectangle) return null;
+    if (null == intersectionRectangle) {
+      return null;
+    }
     // Get the vertices of the intersection rectangle and the two intersecting
     // rectangles, removing duplicates
     Set<Point> vertices = intersectionRectangle.getVertices();
