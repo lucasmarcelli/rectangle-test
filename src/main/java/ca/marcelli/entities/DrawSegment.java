@@ -49,7 +49,7 @@ public class DrawSegment extends Drawable {
       return false;
     }
     DrawSegment segment = (DrawSegment) o;
-    return p1.equals(segment.p1) && p2.equals(segment.p2);
+    return p1.equals(segment.p1) && p2.equals(segment.p2) || p2.equals(segment.p1) && p1.equals(segment.p2);
   }
 
   @Override

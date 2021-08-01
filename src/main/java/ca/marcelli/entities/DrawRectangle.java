@@ -97,15 +97,18 @@ public class DrawRectangle extends Drawable {
    * @param isY                         true if we're looking at horizontal lines
    * @return a stream of drawables representing the various intersections
    */
-  public static Stream<Drawable> extractIntersectPoints(Map.Entry<Integer, List<Point>> entry,
-                                                        int totalCount,
-                                                        Set<Point> intersectionRectanglePoints,
-                                                        Set<Point> a, Set<Point> b, boolean isY) {
+  public static Stream<Drawable> extractIntersects(Map.Entry<Integer, List<Point>> entry,
+                                                   int totalCount,
+                                                   Set<Point> intersectionRectanglePoints,
+                                                   Set<Point> a, Set<Point> b, boolean isY) {
 
     int count = entry.getValue().size();
     DrawSegment segment = null;
+    // Edge case, segment will be found
     if (totalCount < 10 || (totalCount == 10
         && entry.getValue().stream().filter(p -> a.contains(p) || b.contains(p)).count() == 4)) {
+      // Conceptually the extraction of a segment is similar to finding an "intersecting" adjacency shared
+      // by all three rectangles, but this method is simple and works iff you have an intersection
       List<DrawPoint> points = entry.getValue().stream()
           .filter(p -> intersectionRectanglePoints.contains(p) && (a.contains(p) || b.contains(p)))
           .map(DrawPoint::new).collect(Collectors.toList());
@@ -114,9 +117,11 @@ public class DrawRectangle extends Drawable {
       }
     }
 
+    // Even if we found a segment, there can be other point intersections
     DrawSegment finalSegment = segment;
     return Stream.concat(Stream.of(segment),
         entry.getValue().stream()
+            // Don't create points contained on a segment intersection
             .filter(p -> finalSegment == null || !finalSegment.containsPoint(p))
             .sorted(Comparator.comparingInt(p -> isY ? p.x : p.y)).skip(1).limit(count - 2)
             .map(DrawPoint::new))

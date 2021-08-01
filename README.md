@@ -24,5 +24,5 @@ You can draw new rectangles and evaluate against those, simply click and drag in
 
 ### Tests
 
-`mvn test` will run the unit tests. the main logic for the rectangles is unit tested, the GUI focused stuff is not
+`mvn test` will run unit tests.
 

@@ -17,6 +17,10 @@ public class DrawPoint extends Drawable {
     super(p.x - 2, p.y - 2, 5, 5, Color.CYAN);
   }
 
+  public DrawPoint(int x, int y) {
+    this(new Point(x, y));
+  }
+
   /**
    * Get the points true place
    * @return point, with offset removed

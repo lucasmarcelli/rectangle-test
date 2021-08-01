@@ -119,17 +119,10 @@ public class RectangleFrame extends JFrame {
         rectanglePanel.getRectangles().values().stream().filter(r -> r != rectangle).forEach(r -> {
           // Check for intersection
           DrawRectangle intersection = r.isIntersectingWith(rectangle);
-          // Check adjacent
-          List<DrawSegment> adjacentSegments = r.isAdjacentTo(rectangle);
-          rectanglePanel.addIntersectPointsAndSegments(adjacentSegments);
-          adjacentSegments.forEach(segment -> intersectPanel.add(new JLabel(segment.getMessage())));
           if (null != intersection) {
-            // We use the name of the rectangle to write label to info panel easily.
-            // Since containment is just intersection but with equality to one of the
-            // original rectangles,
+            // Since containment is just intersection but with equality to one of the original rectangles,
             // i only need to check rectangles that actually had an intersection
             intersection.setColor(Color.BLUE);
-            // You really need to use HTML for multiline jlabels yeesh...
             if (rectangle.hasContainmentWith(r, intersection)) {
               intersection.setMessage(String.format("<html>%s contains %s<br/></html>",
                   rectangle.getName(), r.getName()));
@@ -141,7 +134,7 @@ public class RectangleFrame extends JFrame {
               message +=
                   String.format("%s intersects with %s<br/>", r.getName(), rectangle.getName());
               List<Drawable> pointsAndSegments = rectanglePanel
-                  .createIntersectionPointsAndSegments(intersection, r, rectangle);
+                  .getAllIntersectionsFor(intersection, r, rectangle);
               message += pointsAndSegments.stream().map(drawable -> {
                 rectanglePanel.addIntersectPointsAndSegments(drawable);
                 if (drawable instanceof DrawSegment) {
@@ -158,6 +151,11 @@ public class RectangleFrame extends JFrame {
             JLabel intersectLabel = new JLabel(intersection.getMessage());
             intersectLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
             intersectPanel.add(intersectLabel);
+          } else {
+            // Check adjacent
+            List<DrawSegment> adjacentSegments = r.isAdjacentTo(rectangle);
+            rectanglePanel.addIntersectPointsAndSegments(adjacentSegments);
+            adjacentSegments.forEach(segment -> intersectPanel.add(new JLabel(segment.getMessage())));
           }
         });
         revalidate();

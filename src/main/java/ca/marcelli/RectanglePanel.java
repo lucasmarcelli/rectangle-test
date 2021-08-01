@@ -15,12 +15,14 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.swing.JPanel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@NoArgsConstructor
 public class RectanglePanel extends JPanel {
 
   @Getter
-  private final HashMap<String, DrawRectangle> rectangles;
+  private HashMap<String, DrawRectangle> rectangles;
 
   // Simple way to draw new rectangles
   private Point newPointA, newPointB;
@@ -51,26 +53,27 @@ public class RectanglePanel extends JPanel {
   }
 
   /**
-   * Creates the drawables that will show the intersection points and segments. An infinite intersection
-   * segment occurs when the rectangles share one or more sides with each other, but still intersect.
+   * Creates the drawables that will show the intersection points and segments. A point intersection
+   * occurs when two orthogonal sides cross. An "infinite" intersection segment occurs when the
+   * rectangles share one or more sides with each other, but still intersect.
    *
    * The extraction works conceptually by taking a vertical line, moving it over each possible x value,
    * and counting the points. If the number of points is at least 3, there must be an intersection there,
    * and it will correspond to the "middle" of the values.
    * Repeat with a horizontal line for y values.
    *
-   * I later realized I could extract the infinite intersections by checking for segments that were
-   * adjacent to the intersection rectangle and both rectangles, but I ran low on time and
-   * didn't want to risk breaking what I had here, but the method is essentially the same.
    *
    * @param intersectionRectangle DrawRectangle representing the intersection
    * @param a DrawRectangle for intersection
    * @param b Second DrawRectangle for intersection
    * @return a list of drawables to render
    */
-  public List<Drawable> createIntersectionPointsAndSegments(DrawRectangle intersectionRectangle,
-                                                            DrawRectangle a,
-                                                            DrawRectangle b) {
+  public List<Drawable> getAllIntersectionsFor(DrawRectangle intersectionRectangle,
+                                               DrawRectangle a,
+                                               DrawRectangle b) {
+
+    // Fast fail in case intersection is null.
+    if(null == intersectionRectangle) return null;
     // Get the vertices of the intersection rectangle and the two intersecting
     // rectangles, removing duplicates
     Set<Point> vertices = intersectionRectangle.getVertices();
@@ -78,22 +81,21 @@ public class RectanglePanel extends JPanel {
     vertices.addAll(b.getVertices());
     int totalCount = vertices.size();
     List<Map<Integer, List<Point>>> hashes = DrawRectangle.getPointHashes(vertices);
-
     // 3 or more points along a vertical line
-    Stream<Drawable> xPoints =
+    Stream<Drawable> xIntersects =
         hashes.get(0).entrySet().stream().filter(entry -> entry.getValue().size() > 2)
-            .flatMap(entry -> DrawRectangle.extractIntersectPoints(entry, totalCount,
+            .flatMap(entry -> DrawRectangle.extractIntersects(entry, totalCount,
                 intersectionRectangle.getVertices(),
                 a.getVertices(), b.getVertices(), false));
 
     // 3 or more points along a horizontal line
-    Stream<Drawable> yPoints =
+    Stream<Drawable> yIntersects =
         hashes.get(1).entrySet().stream().filter(entry -> entry.getValue().size() > 2)
-            .flatMap(entry -> DrawRectangle.extractIntersectPoints(entry, totalCount,
+            .flatMap(entry -> DrawRectangle.extractIntersects(entry, totalCount,
                 intersectionRectangle.getVertices(),
                 a.getVertices(), b.getVertices(), true));
 
-    return Stream.concat(xPoints, yPoints).distinct().collect(Collectors.toList());
+    return Stream.concat(xIntersects, yIntersects).distinct().collect(Collectors.toList());
   }
 
   // Removing from the hash + a repaint on the listener ensures the rectangle is
